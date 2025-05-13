@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP JS - Livralia</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        code{
+            display: block;
+            background-color: #000000;
+            color: white;
+            width: 100vw;
+            height: 100vh;
+            padding: 10px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <code id="consoleoutput">
+
+    </code>
+    <script>
+        const consoleouput = document.getElementById('consoleoutput');
+
+        function log(str, newline = true){
+            let text = str + (newline ? '\n' : '');
+            consoleouput.innerText += text;
+            console.log(text);
+        }
+
+        class Pessoa{
+            #nome = "Pessoa 01";
+            #cpf = "123.456.789-01";
+            constructor(nome, cpf){
+                log(`Fui criado, meu nome é ${nome}, meu CPF é ${cpf}`, false);
+                this.#nome = nome;
+                this.#cpf = cpf;
+            }
+
+            get nome(){
+                return this.#nome;
+            }
+
+            get cpf(){
+                return this.#cpf;
+            }
+
+            set nome(newnome){
+                this.#nome = newnome;
+            }
+
+            set cpf(newcpf){
+                this.#cpf = newcpf;
+            }
+        }
+        
+        class Biblieotecário extends Pessoa{
+            #matriculaFuncionário = 0;
+            #turno = "Manhã";
+            constructor(nome, cpf, matriculaFuncionário, turno){
+                super(nome, cpf);
+                log(`, minha matrícula é ${matriculaFuncionário}, meu turno é ${turno}`);
+                this.#matriculaFuncionário = matriculaFuncionário;
+                this.#turno = turno;
+            }
+
+            registrarEmprestimo(leitor, livro){
+                log(`Bibliotecário ${this.nome} está registrando empréstimo para o leitor ${leitor.nome} o livro: ${livro}`);
+            }
+        }
+
+        class Leitor extends Pessoa{
+            #codigoLeitor = 0;
+            #livrosEmprestados = [];
+            constructor(nome, cpf, codigoLeitor){
+                super(nome, cpf);
+                log(`, meu código de leitor é ${codigoLeitor}`);
+                this.#codigoLeitor = codigoLeitor;
+            }
+
+            emprestarLivro(titulo){
+                log(`Eu, ${this.getNome()}, estou pegando o livro emprestado: ${titulo}`);
+                this.#livrosEmprestados.push(titulo);
+            }
+        }
+
+        let bibliotecário = new Biblieotecário("João", "123456789", 123, "Noite");
+        let leitor = new Leitor("Maria", "987654321", 456);
+        let leitor2 = new Leitor("Gilberto", "111111111", 789);
+
+        bibliotecário.registrarEmprestimo(leitor, "Harry Potter");
+        bibliotecário.registrarEmprestimo(leitor, "Harry Potter 2");
+        bibliotecário.registrarEmprestimo(leitor, "Harry Potter 3, A continuação de Harry Potter 1 e 2");
+        bibliotecário.registrarEmprestimo(leitor2, "Harry Potter 4");
+        bibliotecário.registrarEmprestimo(leitor2, "Harry Potter 5");
+
+    </script>
+</body>
+</html>

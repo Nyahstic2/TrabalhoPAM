@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Veículos</title>
+    <style>
+        *{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        *:not(button,input){
+            margin: 0;
+            padding: 0;
+            background-color: rgb(2, 0, 5);
+            color: white;
+        }
+
+        form *:not(form label){
+            margin: 1.2vh 0;
+        }
+
+        h1,h2,span,p{
+            margin: 2vh 1.2vw;
+        }
+
+        button,li{
+            margin: 1vh 1.6vw;
+            list-style-type: none;
+        }
+
+        .carromoto{
+            border-top: 2px solid white;
+            border-bottom: 2px solid white;
+            max-width: 60vw;
+            margin: 0 auto;
+        }
+
+        .carromoto:first-child{
+            border-top: 1px solid white;
+        }
+        .carromoto:last-child{
+            border-bottom: 1px solid white;
+        }
+
+        .carromoto *{
+            margin: 2vh 0.8vw;
+        }
+
+        dialog{
+            position: absolute;
+            margin: revert !important;
+            padding: revert !important;
+            left: 0;
+            top: 0;
+            display: block;
+            opacity: 0;
+            transform: translateY(-1000px);
+            transition: all 750ms cubic-bezier(0.4, 0, 0.15, 1);
+        }
+
+        dialog form{
+            text-align: left !important;
+            padding: 1vh 2vw;
+            user-select: none;
+        }
+
+        dialog[open]{
+            display: block;
+            opacity: 1;
+            transform: translateY(0px); 
+        }
+        
+        dialog[open]::backdrop{
+            animation: bg 100000ms infinite;
+        }
+
+        @keyframes bg {
+            0%{
+                background-color: rgba(30, 113, 185, 0.15);
+            }
+            10%{
+                background-color: rgba(71, 30, 185, 0.15);
+            }
+            20%{
+                background-color: rgba(182, 185, 30, 0.15);
+            }
+            30%{
+                background-color: rgba(30, 185, 138, 0.15);
+            }
+            40%{
+                background-color: rgba(185, 30, 43, 0.15);
+            }
+            50%{
+                background-color: rgba(5, 1, 0, 0.15);
+            }
+            60%{
+                background-color: rgba(185, 136, 30, 0.15);
+            }
+            70%{
+                background-color: rgba(107, 107, 107, 0.15);
+            }
+            80%{
+                background-color: rgba(71, 30, 185, 0.15);
+            }
+            90%{
+                background-color: rgba(11, 0, 32, 0.15);
+            }
+            100%{
+                background-color: rgba(30, 113, 185, 0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Genciamento de Veículos</h1>
+    <button onclick="document.getElementById('register').showModal()">Adicionar um Novo veículo</button>
+    <h2>Veículos disponíveis</h2>
+    <ul id="veiculos">
+        <li>Não tem nenhum veículo por enquanto, adicione um apertando o botão <i><kbd>Adicionar um Novo veículo<kbd></i></li>
+    </ul>
+    <dialog id="register">
+        <form id="criarveiculo">
+            <h1>Registrar um Veículo</h1>
+            <br>
+            <label>
+                <input type="checkbox" name="moto" id="moto">É uma moto?
+            </label>
+            <br>
+            <label>
+                Nome do veículo:
+                <br>
+                <input type="text" id="vname" name="nome" autocomplete="off" placeholder="Carro incrível..." required>
+            </label>
+            <br>
+            <label>
+                Ano da Fabricação: 
+                <input type="number" min="1960" max="2999" step="1" value="2000" name="ano" required>
+            </label>
+            <br>
+            <label id="isMoto"> <!-- Cilindradas caso moto -->
+                Nº de Portas:
+            </label>
+            <input type="number" name="portaoucilindrada" min="2" max="10" step="1" value="2" required>
+            <br>
+            <br>
+            <button type="submit">Enviar</button>
+        </form>
+    </dialog>
+    <script>
+        let veiculos = [];
+        class Veiculo{
+            #ano = 0;
+            #nome = "";
+            constructor(ano, nome){
+                this.#ano = ano;
+                this.#nome = nome;
+            }
+
+            tipo() {
+                return "???";
+            }
+
+            get ano(){
+                return this.#ano;
+            }
+
+            get nome(){
+                return this.#nome;
+            }
+
+            set ano(newAno){
+                this.#ano = newAno;
+            }
+
+            set nome(newNome){
+                this.#nome = newNome;
+            }
+        }
+
+        class Moto extends Veiculo{
+            #cilindradas = 0;
+            constructor(ano, nome, cilindradas){
+                super(ano, nome);
+                this.#cilindradas = cilindradas;
+            }
+
+            get cilindradas(){
+                return this.#cilindradas;
+            }
+
+            set cilindradas(newCilindradas){
+                this.#cilindradas = newCilindradas;
+            }
+
+            tipo(){
+                return "Moto";
+            }
+        }
+
+        class Carro extends Veiculo{
+            #portas = 0;
+            constructor(ano, nome, portas){
+                super(ano, nome);
+                this.portas = portas;
+            }
+
+            get portas(){
+                return this.#portas;
+            }
+
+            set portas(newPortas){
+                this.#portas = newPortas;
+            }
+
+            tipo(){
+                return "Carro";
+            }
+        }
+
+        let dialog = document.getElementById("register");
+        let form = document.getElementById("criarveiculo");
+        let veiculosLista = document.getElementById("veiculos");
+        let moto = document.getElementById("moto");
+
+        moto.addEventListener("change", () => {
+            const texto = document.getElementById("isMoto");
+            const placeholder = document.getElementById("vname");
+            if (moto.checked){
+                texto.innerText = "Nº de Cilindradas:";
+                placeholder.placeholder = "Moto incrível...";
+            }
+            else{
+                texto.innerText = "Nº de Portas:";
+                placeholder.placeholder = "Carro incrível...";
+            }
+        });
+
+        form.addEventListener("submit", (e) => {
+            const veiculo = {
+                moto: form.elements['moto'].checked,
+                nome: form.elements['nome'].value,
+                ano: parseInt(form.elements['ano'].value),
+                portaoucilindrada: parseInt(form.elements['portaoucilindrada'].value)
+            };
+            if (veiculo.moto) {
+                let moto = new Moto(veiculo.ano, veiculo.nome, veiculo.portaoucilindrada);
+                veiculos.push(moto);
+            }
+            else{
+                let carro = new Carro(veiculo.ano, veiculo.nome, veiculo.portaoucilindrada);
+                veiculos.push(carro);
+            }
+            form.reset();
+            dialog.close();
+            veiculosLista.innerHTML = "";
+            veiculos.forEach((veiculo) =>
+            {
+                const eUmaMoto = veiculo.tipo() === "Moto";
+                const div = document.createElement("div");
+                div.classList.add("carromoto");
+                const nome = document.createElement("h2");
+                const ano = document.createElement("p");
+                const portaoucilindrada = document.createElement("p");
+                const tipo = document.createElement("p");
+                nome.textContent = veiculo.nome;
+                ano.textContent = "Ano: " + veiculo.ano;
+                portaoucilindrada.textContent = eUmaMoto ? `Cilindradas: ${veiculo.cilindradas}` : `Portas: ${veiculo.portas}`;
+                tipo.textContent = "Tipo: " + (eUmaMoto ? "Moto" : "Carro");
+                div.appendChild(nome);
+                div.appendChild(ano);
+                div.appendChild(portaoucilindrada);
+                div.appendChild(tipo);
+                veiculosLista.appendChild(div);
+            });
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>

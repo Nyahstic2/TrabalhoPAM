@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP JS - Produtos</title>
+</head>
+<body>
+    <script>
+        class Produto{
+            #nome = "Produto sem nome";
+            #preço = 0.0;
+            #categoria = "N/A";
+
+            constructor(nome, preço, categoria){
+                this.#nome = nome;
+                this.#preço = preço;
+                this.#categoria = categoria;
+            }
+
+            get nome() {
+                return this.#nome;
+            }
+
+            set nome(novoNome) {
+                this.#nome = novoNome;
+            }
+
+            get preço() {
+                return this.#preço;
+            }
+
+            set preço(novoPreço) {
+                this.#preço = novoPreço;
+            }
+
+            get categoria() {
+                return this.#categoria;
+            }
+
+            set categoria(novaCategoria) {
+                this.#categoria = novaCategoria;
+            }
+
+            render(extrasElements){
+                const div = document.createElement("div");
+                const h1 = document.createElement("h1");
+                const span = document.createElement("span");
+                h1.innerText = `${this.#nome}`;
+                span.innerText = `Preço: R$ ${this.#preço} - Categoria: ${this.#categoria}`;
+                div.appendChild(h1);
+                div.appendChild(span);
+                if (Array.isArray(extrasElements)){
+                    extrasElements.forEach(element => {
+                        div.appendChild(element);
+                    });
+                }
+                return div;
+            }
+        }
+
+        class Livro extends Produto{
+            #autor = "Sem autor";
+            #anoPublicação = "20XX";
+            #sinopse = "Sem sinopse";
+            constructor(nome, preço, categoria, autor, anoPublicação, sinopse){
+                super(nome, preço, categoria);
+                this.#autor = autor;
+                this.#anoPublicação = anoPublicação;
+                this.#sinopse = sinopse;
+            }
+
+            get autor() {
+                return this.#autor;
+            }
+
+            get anoPublicação() {
+                return this.#anoPublicação;
+            }
+
+            get sinopse() {
+                return this.#sinopse;
+            }
+
+            set autor(novoAutor) {
+                this.#autor = novoAutor;
+            }
+
+            set anoPublicação(novoAnoPublicação) {
+                this.#anoPublicação = novoAnoPublicação;
+            }
+
+            set sinopse(novaSinopse) {
+                this.#sinopse = novaSinopse;
+            }
+            
+            render(){
+                const span = document.createElement("span");
+                span.innerText = `Autor: ${this.#autor} - Ano de publicação: ${this.#anoPublicação}`;
+                const p = document.createElement("p");
+                p.innerText = this.#sinopse;
+                return super.render([document.createElement("br"), p, span]);
+            }
+        }
+
+        class Eletronico extends Produto{
+            #marca = "Sem marca";
+            #modelo = "Sem modelo";
+            #cor = "Sem cor";
+
+            constructor(nome, preço, categoria, marca, modelo, cor){
+                super(nome, preço, categoria);
+                this.#marca = marca;
+                this.#modelo = modelo;
+                this.#cor = cor;
+            }
+
+            get marca() {
+                return this.#marca;
+            }
+
+            get modelo() {
+                return this.#modelo;
+            }
+
+            get cor(){
+                return this.#cor;
+            }
+
+            set marca(novaMarca) {
+                this.#marca = novaMarca;
+            }
+
+            set modelo(novoModelo) {
+                this.#modelo = novoModelo;
+            }
+
+            set cor(novaCor) {
+                this.#cor = novaCor;
+            }
+
+            render(){
+                const p = document.createElement("p");
+                p.innerText = `Marca: ${this.marca} - Modelo: ${this.modelo} (Cor: ${this.cor})`;
+                return super.render([p]);
+            }
+        }
+
+        let eletronico = new Eletronico("Smartphone", 2000, "Eletrônicos", "Apple", "iPhone 13", "Preto");
+        let eletronico2 = new Eletronico("Notebook", 3000, "Eletrônicos", "Dell", "Inspiron 15", "Branco");
+        let livro = new Livro("Harry Potter", 20, "Livros", "J.K. Rowling", "2001","Um jovem bruxo embarca em uma jornada para derrotar o senhor das trevas Voldemort e descobre o poder da amizade e da coragem.");
+        let livro2 = new Livro("O Senhor dos Anéis", 30, "Livros", "J.R.R. Tolkien", "2001","Uma aventura épica de fantasia onde um hobbit e seus companheiros partem para destruir um anel poderoso que ameaça a Terra-média.");
+
+        let produtos = [eletronico, eletronico2, livro, livro2];
+
+        produtos.forEach(p => document.body.appendChild(p.render()));
+    </script>
+</body>
+</html>
