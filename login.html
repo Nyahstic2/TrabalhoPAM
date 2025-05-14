@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        *:not(button, input) {
+            margin: 0;
+            padding: 0;
+            background-color: rgb(2, 0, 5);
+            color: white;
+        }
+
+        input, button {
+            width: fit-content;
+            height: fit-content;
+            font-size: large;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            view-transition-name: body-content;
+        }
+
+        h1, h2, span, p {
+            margin: 2vh 1.2vw;
+        }
+
+        button, li {
+            margin: 1vh 1.6vw;
+            list-style-type: none;
+        }
+
+        .loginDiv {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: nowrap;
+            background-color: #4200a544;
+            width: 100vw;
+            max-width: 20vw;
+            height: 100vh;
+            max-height: 60vh;
+            justify-content: center;
+            margin-right: auto;
+            margin-left: auto;
+            border-radius: 1vh;
+            border: 0.08vh solid white;
+        }
+
+        .loginDiv *:not(input, button) {
+        background-color: transparent;
+        }
+
+        .loginDiv label {
+        margin: 1.2vh 0;
+        font-size: 24px;
+        }
+
+        .loginDiv label * {
+        display: block;
+        }
+
+        /* Transição com ViewTransition */
+        @keyframes slide-out {
+            from {
+                opacity: 1;
+                rotate: 0deg;
+            }
+            to {
+                opacity: 0;
+                rotate: 1440deg;
+            }
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                rotate: -720deg;
+            }
+            to {
+                opacity: 1;
+                rotate: 0deg;
+            }
+        }
+
+        ::view-transition-old(body-content) {
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: slide-out 1s ease-in-out;
+        }
+
+        ::view-transition-new(body-content) {
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: slide-in 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <form class="loginDiv">
+        <h1>Entrar</h1>
+        <label>
+            Usuário
+            <input type="text" name="username" id="usuario" placeholder="Usuário aqui..." autocomplete="off" autofocus>
+        </label>
+        
+        <label>
+            Senha
+            <input type="password" name="password" id="senha" placeholder="Senha aqui..." autocomplete="off">
+        </label>
+
+        <button id="login">Entrar</button>
+    </form>
+
+    <script>
+        class Acesso {
+            #usuarios = [
+                { usuario: "admin", senha: "admin", admin: true },
+                { usuario: "usuario", senha: "usuario", admin: false },
+                { usuario: "outro", senha: "outro", admin: false },
+                { usuario: "pessoa", senha: "pessoa", admin: true }
+            ]
+
+            verificar(usuario, senha) {
+                const usuarioEncontrado = this.#usuarios.find((u) =>
+                    u.usuario === usuario && u.senha === senha
+                );
+                return usuarioEncontrado !== undefined;
+            }
+
+            verificarAdmin(usuario) {
+                const usuarioEncontrado = this.#usuarios.find((u) =>
+                    u.usuario === usuario && u.admin === true
+                );
+                return usuarioEncontrado !== undefined;
+            }
+        }
+
+        const username = document.getElementById("usuario");
+        const password = document.getElementById("senha");
+        const loginForm = document.querySelector(".loginDiv");
+        const acesso = new Acesso();
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const usrr = username.value.toLowerCase();
+            const pass = password.value;
+
+            if (acesso.verificar(usrr, pass)) {
+                if (acesso.verificarAdmin(usrr)) {
+                    mostrarPainelAdmin(usrr);
+                } else {
+                    mostrarPainelUsuario(usrr);
+                }
+            } else {
+                alert("Usuário ou senha incorretos!");
+            }
+        });
+
+        function mostrarPainelAdmin(nome) {
+            var admin = `
+                    <div style="text-align: center; padding: 5vh;">
+                    <h1 style="color: white;">Bem-vindo, ${nome}! 🧑‍💻</h1>
+                    <h2 style="color: #ff8c00;">Painel de Administração</h2>
+                    <p style="color: white;">Aqui você pode controlar absolutamente nada ainda.</p>
+                    <button onclick="location.reload()">Sair</button>
+                    </div>
+                `;
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {
+                document.body.innerHTML = admin;
+                });
+            } else {
+                document.body.innerHTML = admin;
+            }
+        }
+
+        function mostrarPainelUsuario(nome) {
+            var usuario = `
+                <div style="text-align: center; padding: 5vh;">
+                    <h1 style="color: white;">Olá, ${nome}!</h1>
+                    <h2 style="color: #00bfff;">Área do Usuário.</h2>
+                    <p style="color: white;">Ainda não tem nada aqui, mas você entrou com sucesso!</p>
+                    <button onclick="location.reload()">Sair</button>
+                </div>
+            `;
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {
+                document.body.innerHTML = usuario;
+                });
+            } else {
+                document.body.innerHTML = usuario;
+            }
+        }
+
+    </script>
+</body>
+</html>

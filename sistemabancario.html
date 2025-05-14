@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP JS - Sistema Bancário</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            height: 100vh;
+            overflow: hidden;
+        }
+        code{
+            display: block;
+            background-color: #000000;
+            color: white;
+            width: 100vw;
+            height: 95.1%;
+            padding: 10px;
+            border: 1px solid black;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="margin-left: 10px;">Saida do Console (Também mostrado no DevTools)</h1>
+    <code id="consoleoutput">
+
+    </code>
+    <script>
+        const consoleouput = document.getElementById('consoleoutput');
+
+        function log(str, newline = true){
+            let text = str + (newline ? '\n' : '');
+            consoleouput.innerText += text;
+            console.log(text);
+        }
+
+        class ContaBancaria{
+            #titular = "";
+            #saldo = 0.0;
+            #numero = 0;
+
+            constructor (titular, saldo = 0.0, numero = 0){
+                this.#titular = titular;
+                this.#saldo = saldo;
+                this.#numero = numero;
+
+                log(`Uma nova conta foi registrada para o titular ${titular}, com o número ${numero} e o saldo inicial de R$ ${this.#saldo}.`);
+            }
+
+            get titular(){
+                return this.#titular;
+            }
+
+            get saldo(){
+                return this.#saldo;
+            }
+
+            get numero(){
+                return this.#numero;
+            }
+
+            set titular(newTitular){
+                this.#titular = newTitular;
+            }
+
+            set saldo(newSaldo){
+                this.#saldo = newSaldo;
+            }
+
+            set numero(newNumero){
+                this.#numero = newNumero;
+            }
+
+            sacar(saldo){
+                if ((this.#saldo - saldo) < 0) {
+                    log('Saldo insuficiente');
+                    return false;
+                }
+                log(`Saque de R$ ${saldo} realizado com sucesso.`);
+                this.#saldo -= saldo;
+                return saldo;
+            }
+
+            depositar(valor){
+                log(`depósito de R$ ${valor} realizado com sucesso.`);
+                this.#saldo += valor;
+            }
+
+            consultarSaldo(){
+                log(`${this.titular} tem um saldo de R$ ${this.#saldo.toFixed(2)}.`);
+            }
+        }
+
+class ContaCorrente extends ContaBancaria{
+            #rendimento = 0;
+            constructor (titular, saldo = 0.0, numero = 0, rendimento = 0){
+                log(`[Conta Corrente] :`, false);
+                super(titular, saldo, numero);
+                this.#rendimento = rendimento;
+            }
+
+            aplicarRendimento(vezes)
+            {
+                for(let i = 0; i < vezes; i++){
+                    this.saldo = this.saldo * (1 + this.#rendimento);
+                }
+                log(`A conta corrente aplicou rendimento ${vezes} vezes.`);
+            }
+
+            valorDeRendimento(){
+                return `${(this.#rendimento * 100).toFixed(2)}%`;
+            }
+        }
+
+        const Joao = [
+            new ContaBancaria("João Heitor", 1_000_000, 80),
+            new ContaCorrente("João Heitor", 500_000, 230, 0.55),
+        ];
+        
+        const Mae = [
+            new ContaBancaria("Margaret \"Mae\" Borowski", 300, 95),
+            new ContaCorrente("Margaret \"Mae\" Borowski", 300, 235, 0.04) 
+        ];
+
+        function aplicarMovimentos(contas){
+            contas.forEach(conta => {
+                log("");
+                conta.sacar(500_000);
+                conta.sacar(500_000);
+                conta.depositar(1000);
+                conta.depositar(50000);
+                conta.depositar(1200);
+                conta.depositar(100);
+                conta.depositar(3);
+                try{ 
+                    log(`Esta conta tem ${conta.valorDeRendimento()} de rendimento.`);
+                    conta.aplicarRendimento(10); 
+                } catch { };
+                conta.consultarSaldo();
+                log("");
+            });
+        }
+
+        aplicarMovimentos(Joao);
+        aplicarMovimentos(Mae);
+    </script>
+</body>
+</html>
